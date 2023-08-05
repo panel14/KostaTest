@@ -1,0 +1,58 @@
+html {
+    font-size: 14px;
+    position: relative;
+    min-height: 100%;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+button {
+    border: none;
+    background-color: inherit;
+}
+
+button:hover {
+    background-color: #f2f1f1
+}
+
+a {
+    padding: 3px;
+}
+
+a:hover {
+    cursor: pointer;
+    background-color: #f2f1f1;
+}
+
+table {
+
+}
+
+th, td {
+    border-bottom: 1px solid #000;
+}
+
+th, td {
+    padding: 5px;
+    text-align: left;
+}
+
+tr {
+    height: 50px;
+}
+
+tr:hover {
+    background-color: #f2f1f1;
+}
+
+.validationLabel {
+    color: red;
+}

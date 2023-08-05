@@ -1,0 +1,62 @@
+﻿@model List<Employee>
+
+@{
+    ViewData["Title"] = "Просмотр сотрудников";
+}
+
+<link rel="stylesheet" href="~/css/ViewEmployes.css"/>
+
+<h4>Сотрудники отдела @ViewBag.DepName</h4>
+<div class="employments">
+    <div>
+        <table class="employmentsTable">
+            <caption>Список сотрудников</caption>
+            <tr>
+                <th>ФИО</th>
+                <th>Дата рождения</th>
+                <th>Возраст</th>
+                <th>Серия документа</th>
+                <th>Номер документа</th>
+                <th>Должность</th>
+            </tr>
+            @foreach (Employee emp in Model)
+            {
+                <tr>
+                    <td>@emp.SurName @emp.FirstName @emp.Patronymic</td>
+                    <td>@emp.DateOfBirth.ToString("yyyy-MM-dd")</td>
+                    <td>@((DateTime.Now - emp.DateOfBirth).Days / 365)</td>
+                    <td>@emp.DocSeries</td>
+                    <td>@emp.DocNumber</td>
+                    <td>@emp.Position</td>
+
+                    <td>
+                        <a data-ajax="true"
+                           data-ajax-mode="replace"
+                           data-ajax-update="#editEmployeeContainer"
+                           data-ajax-url="@Url.Action("ChangeEmployee", "Employee", new {id = emp.Id})">
+                            <img src="~/images/edit.svg" alt="edit" />
+                        </a>
+                    </td>
+                    <td>
+                        <a data-ajax="true"
+                           data-ajax-mode="replace"
+                           data-ajax-update="#changeEmployeeResult"
+                           data-ajax-url="@Url.Action("DeleteEmployee", "Employee", new {id = emp.Id})">
+                            <img src="~/images/delete.svg" alt="delete" />
+                        </a>
+                    </td>
+                </tr>
+            }
+        </table>
+        <a data-ajax="true"
+           data-ajax-mode="replace"
+           data-ajax-update="#editEmployeeContainer"
+           data-ajax-url="@Url.Action("AddEmployee", "Employee")">
+            Добавить сотрудника
+        </a>
+    </div>
+   
+    <div id="editEmployeeContainer"></div>
+</div>
+
+<p id="changeEmployeeResult"></p>

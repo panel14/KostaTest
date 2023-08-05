@@ -1,0 +1,85 @@
+﻿@model EmployeeViewModel
+@{
+    ViewData["Title"] = "Редактирование сотрудника";
+    string date = Model.DateOfBirth.ToString("yyyy-MM-dd");
+}
+
+<h5>@Model.Action сотрудника @Model.SurName @Model.FirstName?.First() @Model.Patronymic?.First()</h5>
+<form action="Employee/ChangeEmployee" data-ajax="true" data-ajax-mode="replace" data-ajax-update="#editEmployeeContainer" method="post">
+    @Html.HiddenFor(model => model.Id, new {value = Model.Id})
+    @Html.ValidationSummary(true, string.Empty)
+    <table>
+        <tr>
+            <td>Фамилия:</td>
+            <td>
+                @Html.TextBoxFor(model => model.SurName, new {value = Model.SurName, placeholder = "Иванов"})
+                @Html.ValidationMessageFor(model => model.SurName,  string.Empty, new {@class = "validationLabel"})
+            </td>
+        </tr>
+        <tr>
+            <td>Имя:</td>
+            <td>
+                @Html.TextBoxFor(model => model.FirstName, new {value = Model.FirstName, placeholder = "Иван"})
+                @Html.ValidationMessageFor(model => model.FirstName,  string.Empty, new {@class = "validationLabel"})
+            </td>
+        </tr>
+        <tr>
+            <td>Отчество:</td>
+            <td>
+                @Html.TextBoxFor(model => model.Patronymic, new {value = Model.Patronymic, placeholder = "Иванович"})
+                @Html.ValidationMessageFor(model => model.Patronymic,  string.Empty, new {@class = "validationLabel"})
+            </td>
+        </tr>
+        <tr>
+            <td>Дата рождения:</td>
+            <td>
+                @Html.EditorFor(model => model.DateOfBirth, new {value = date, @max = "2004-01-01", @min = "1923-01-01"})
+            </td>
+        </tr>
+        <tr>
+            <td>Отдел:</td>
+            <td>
+                <select name="DepartmentID">
+                    @foreach (var dn in Model.DepartmentNames)
+                    {
+                        if (dn.Value == Model.DepartmentId)
+                        {
+                            <option selected value="@dn.Value">@dn.Key</option>
+                        }
+                        else
+                        {
+                            <option value="@dn.Value">@dn.Key</option>
+                        }
+                    }
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>Серия документа:</td>
+            <td>
+                @Html.TextBoxFor(model => model.DocSeries, new {value = Model.DocSeries, placeholder = "L123"})
+                @Html.ValidationMessageFor(model => model.DocSeries,  string.Empty, new {@class = "validationLabel"})
+            </td>
+        </tr>
+        <tr>
+            <td>Номер документа:</td>
+            <td>
+                @Html.TextBoxFor(model => model.DocNumber, new {value = Model.DocNumber, placeholder = "111111"})
+                @Html.ValidationMessageFor(model => model.DocNumber,  string.Empty, new {@class = "validationLabel"})
+            </td>
+        </tr>
+        <tr>
+            <td>Должность:</td>
+            <td>
+                @Html.TextBoxFor(model => model.Position, new {value = Model.Position, placeholder = "Помощник пекаря"})
+                @Html.ValidationMessageFor(model => model.Position,  string.Empty, new {@class = "validationLabel"})
+            </td>
+        </tr>
+    </table>
+    <button>Редактировать</button>
+</form>
+
+@section Scripts{
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}

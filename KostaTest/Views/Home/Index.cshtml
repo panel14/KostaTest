@@ -1,0 +1,69 @@
+﻿@model List<Department>
+
+@{
+    ViewData["Title"] = "Страница предприятия";
+}
+
+@section Scripts
+{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ajax-unobtrusive/3.2.6/jquery.unobtrusive-ajax.js" 
+    integrity="sha256-v2nySZafnswY87um3ymbg7p9f766IQspC5oqaqZVX2c=" crossorigin="anonymous"></script>
+}
+
+<link rel="stylesheet" href="~/css/Index.css"/>
+
+<h2>Просмотр предприятия</h2>
+<div class="departments">
+    <div>
+        <table class="departmentsTable">
+            <caption>Список отделов</caption>
+            <tr>
+                <th>Имя отдела</th>
+                <th>Код отдела</th>
+            </tr>
+            @foreach (Department dep in Model)
+            {
+                <tr>
+                    <td>@dep.Name</td>
+                    <td>@dep.Code</td>
+                    <td>
+                        <a data-ajax="true"
+                           data-ajax-mode="replace"
+                           data-ajax-update="#employmentsResult"
+                           data-ajax-url="@Url.Action("ViewEmployes", "Home", new {id = dep.Id})">
+                            <img src="~/images/show.svg" height="24px" width="24px" alt="show" />
+                        </a>
+                    </td>
+                    <td>
+                        <a data-ajax="true"
+                           data-ajax-mode="replace"
+                           data-ajax-update="#editDepartmentContainer"
+                           data-ajax-url="@Url.Action("ChangeDepartment", "Department", new {id = dep.Id})">
+                            <img src="~/images/edit.svg" alt="edit" />
+                        </a>
+                    </td>
+                    <td>
+                        <a data-ajax="true"
+                           data-ajax-mode="replace"
+                           data-ajax-update="#changeDepartmentResult"
+                           data-ajax-url="@Url.Action("DeleteDepartment", "Department", new {id = dep.Id})">
+                            <img src="~/images/delete.svg" alt="delete" />
+                        </a>
+                    </td>
+                </tr>
+            }
+        </table>
+        <a data-ajax="true"
+           data-ajax-mode="replace"
+           data-ajax-update="#editDepartmentContainer"
+           data-ajax-url="@Url.Action("AddDepartment", "Department")">
+            Добавить отдел
+        </a>
+    </div>
+
+    <div id="editDepartmentContainer"></div>
+</div>
+
+<p id="changeDepartmentResult"></p>
+
+<div id="employmentsResult"></div>

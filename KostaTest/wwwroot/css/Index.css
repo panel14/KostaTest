@@ -1,0 +1,8 @@
+﻿.departments {
+    display: flex;
+}
+
+.departmentsTable {
+    margin-left: 100px;
+    margin-right: 50px;
+}
