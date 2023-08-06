@@ -15,6 +15,7 @@ namespace KostaTest.Controllers
         public PartialViewResult AddDepartment()
         {
             Dictionary<string, Guid> depNames = _departmentRepository.GetDepartmentsNames();
+            depNames.Add("--нет--", Guid.Empty);
             return PartialView("AddDepartment", new DepartmentViewModel() { DepartmentNames = depNames, Action = "Добавление"});
         }
 
@@ -57,23 +58,23 @@ namespace KostaTest.Controllers
             List<Department> deps = _departmentRepository.GetAllDepartments();
             if (deps.Select(x => x.Name).FirstOrDefault(x => x == model.Name) != null)
             {
-                return Content($"Отдел {model.Name} не может быть добавлен, так как отдел с таким именем уже существует");
+                return Content($"Отдел '{model.Name}' не может быть добавлен, так как отдел с таким именем уже существует");
             }
 
             if (deps.Select(x => x.Code).FirstOrDefault(x => x == model.Code) != null)
             {
-                return Content($"Отдел {model.Name} не может быть добавлен, так как отдел с таким кодом ({model.Code}) уже существует");
+                return Content($"Отдел '{model.Name}' не может быть добавлен, так как отдел с таким кодом ({model.Code}) уже существует");
             }
 
             if (dep.Id == Guid.Empty)
             {
                 _departmentRepository.AddDepartment(dep);
-                return Content($"Новый отдел {model.Name} успешно добавлен");
+                return Content($"Новый отдел '{model.Name}' успешно добавлен");
             }
             else
             {
                 _departmentRepository.UpdateDepartment(dep);
-                return Content($"Отдел {model.Name} успешно изменен");
+                return Content($"Отдел '{model.Name}' успешно изменен");
             }
         }
 

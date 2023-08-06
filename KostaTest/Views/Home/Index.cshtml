@@ -2,6 +2,11 @@
 
 @{
     ViewData["Title"] = "Страница предприятия";
+    Dictionary<Guid, string> names = new();
+    foreach (var dep in Model)
+    {
+        names.Add(dep.Id, dep.Name);
+    }
 }
 
 @section Scripts
@@ -12,7 +17,9 @@
 
 <link rel="stylesheet" href="~/css/Index.css"/>
 
-<h2>Просмотр предприятия</h2>
+<a href="@Url.Action("Index", "Home")">
+    <h3>Просмотр предприятия</h3>
+</a>
 <div class="departments">
     <div>
         <table class="departmentsTable">
@@ -20,12 +27,19 @@
             <tr>
                 <th>Имя отдела</th>
                 <th>Код отдела</th>
+                <th>Родительский отдел</th>
             </tr>
             @foreach (Department dep in Model)
             {
                 <tr>
                     <td>@dep.Name</td>
                     <td>@dep.Code</td>
+                    <td>
+                        @if (dep.ParentDepartmentId != null)
+                        {
+                            <text>@names[(Guid)dep.ParentDepartmentId]</text>
+                        }
+                    </td>
                     <td>
                         <a data-ajax="true"
                            data-ajax-mode="replace"

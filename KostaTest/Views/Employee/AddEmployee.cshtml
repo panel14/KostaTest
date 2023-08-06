@@ -7,6 +7,7 @@
 <h5>@Model.Action сотрудника @Model.SurName @Model.FirstName?.First() @Model.Patronymic?.First()</h5>
 <form action="Employee/ChangeEmployee" data-ajax="true" data-ajax-mode="replace" data-ajax-update="#editEmployeeContainer" method="post">
     @Html.HiddenFor(model => model.Id, new {value = Model.Id})
+    @Html.HiddenFor(model => model.Action, new {value = Model.Action})
     @Html.ValidationSummary(true, string.Empty)
     <table>
         <tr>

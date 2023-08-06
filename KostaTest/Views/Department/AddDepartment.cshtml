@@ -10,6 +10,7 @@
 
 <form action="Department/ChangeDepartment" data-ajax="true" data-ajax-mode="replace" data-ajax-update="#editDepartmentContainer" method="post">
     @Html.HiddenFor(model => model.Id, new {value = Model.Id})
+    @Html.HiddenFor(model => model.Action, new {value = Model.Action})
     @Html.ValidationSummary(true, string.Empty)
     <table>
         <tr>

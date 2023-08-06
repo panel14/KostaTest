@@ -1,6 +1,7 @@
 ﻿using KostaTest.Domain.Repositories.Interfaces;
 using KostaTest.Extensions;
 using KostaTest.Models;
+using Microsoft.AspNetCore.Identity;
 using System.Data.SqlClient;
 
 namespace KostaTest.Domain.Repositories
@@ -87,15 +88,26 @@ namespace KostaTest.Domain.Repositories
 
         public void AddDepartment(Department dep)
         {
+            string parentDep = (dep.ParentDepartmentId == Guid.Empty) ? "NULL" : $"'{dep.ParentDepartmentId}'";
             using SqlConnection connection = new(_connectionString);
             using SqlCommand command = new()
             {
                 Connection = connection,
-                CommandText = $"insert into Department values(NEWID(), '{dep.Name}', '{dep.Code}', @guid)"
+                CommandText = $"insert into Department values(NEWID(), '{dep.Name}', '{dep.Code}', {parentDep})"
             };
-            command.Parameters.Add("@guid", System.Data.SqlDbType.UniqueIdentifier).Value = dep.ParentDepartmentId;
             connection.Open();
             command.ExecuteNonQuery();
+
+            if (dep.ParentDepartmentId == Guid.Empty)
+            {
+                using SqlCommand updateId = new()
+                {
+                    Connection = connection,
+                    CommandText = $"update Department set ParentDepartmentId = (select Id from Department where [Name] = '{dep.Name}') where [Name] = '{dep.Name}'"
+                };
+                updateId.ExecuteNonQuery();
+            }
+
             connection.Close();
         }
 
@@ -130,12 +142,36 @@ namespace KostaTest.Domain.Repositories
 
             Department current = GetDepartmentById(id);
 
-            using SqlCommand updateParent = new()
+            if (current.Id == current.ParentDepartmentId)
             {
-                Connection = connection,
-                CommandText = $"update Department set ParentDepartmentID = '{current.ParentDepartmentId}' where ParentDepartmentID = '{id}'"
-            };
-            updateParent.ExecuteNonQuery();
+                using SqlCommand update = new()
+                {
+                    Connection = connection,
+                    CommandText = "begin transaction " +
+                    "declare @enumerator table (ID uniqueidentifier) " +
+                    $"insert into @enumerator select ID from Department where ParentDepartmentID = '{current.Id}' " +
+                    "declare @count int = @@ROWCOUNT " +
+                    "declare @curid uniqueidentifier " +
+                    "while @count <> 0 " +
+                    "begin " +
+                    "select top 1 @curid = ID from @enumerator " +
+                    "update Department set ParentDepartmentID = @curid where ID = @curid " +
+                    "delete from @enumerator where ID = @curid " +
+                    "set @count = @count - 1 " +
+                    "end " +
+                    "commit"
+                };
+                update.ExecuteNonQuery();
+            }
+            else
+            {
+                using SqlCommand updateParent = new()
+                {
+                    Connection = connection,
+                    CommandText = $"update Department set ParentDepartmentID = '{current.ParentDepartmentId}' where ParentDepartmentID = '{id}'"
+                };
+                updateParent.ExecuteNonQuery();
+            }
 
             using SqlCommand deleteDepCommand = new()
             {
